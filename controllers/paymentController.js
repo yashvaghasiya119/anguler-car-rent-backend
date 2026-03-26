@@ -17,9 +17,7 @@ const getLast4 = (cardNumber) => {
 const shouldFakePaymentSucceed = ({ method, cardNumber }) => {
   if (method === 'cash') return true;
   const digits = String(cardNumber || '').replace(/\D/g, '');
-  if (digits.length === 0) return false;
-  const last = digits[digits.length - 1];
-  return parseInt(last, 10) % 2 === 0;
+  return digits.length === 12;
 };
 
 // POST /api/payment/pay
@@ -47,6 +45,11 @@ const payAndBookVehicle = async (req, res) => {
     if (method === 'card') {
       if (!bankName || !cardNumber || !cardHolderName) {
         return res.status(400).json({ message: 'bankName, cardNumber and cardHolderName are required for card payment' });
+      }
+
+      const cardDigits = String(cardNumber).replace(/\D/g, '');
+      if (cardDigits.length !== 12) {
+        return res.status(400).json({ message: 'Card number must be exactly 12 digits' });
       }
     }
 
