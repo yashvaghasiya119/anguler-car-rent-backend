@@ -10,7 +10,8 @@ const {
   getAllVehicles,
   approveVehicle,
   rejectVehicle,
-  updateVehicle
+  updateVehicle,
+  deleteProvider
 } = require('../controllers/adminController');
 
 // User management
@@ -18,6 +19,7 @@ router.get('/users', authMiddleware, allowAdmin, getAllUsers);
 router.get('/providers', authMiddleware, allowAdmin, getAllProviders);
 router.put('/ban-provider/:id', authMiddleware, allowAdmin, banProvider);
 router.put('/unban-provider/:id', authMiddleware, allowAdmin, unbanProvider);
+router.delete('/providers/:id', authMiddleware, allowAdmin, deleteProvider);
 
 // Vehicle management
 router.get('/vehicles', authMiddleware, allowAdmin, getAllVehicles);

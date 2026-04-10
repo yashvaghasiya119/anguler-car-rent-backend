@@ -154,6 +154,36 @@ const updateVehicle = async (req, res) => {
   }
 };
 
+const deleteProvider = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // First check if provider exists
+    const provider = await User.findById(id);
+    if (!provider) {
+      return res.status(404).json({ message: 'Provider not found' });
+    }
+    
+    // Check if the user is actually a provider
+    if (provider.role !== 'provider') {
+      return res.status(400).json({ message: 'User is not a provider' });
+    }
+    
+    // Delete all vehicles associated with this provider
+    await Vehicle.deleteMany({ providerId: id });
+    
+    // Delete the provider
+    await User.findByIdAndDelete(id);
+    
+    res.json({
+      message: 'Provider and all associated vehicles deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete provider error:', error);
+    res.status(500).json({ message: 'Server error while deleting provider' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllProviders,
@@ -162,5 +192,6 @@ module.exports = {
   getAllVehicles,
   approveVehicle,
   rejectVehicle,
-  updateVehicle
+  updateVehicle,
+  deleteProvider
 };
