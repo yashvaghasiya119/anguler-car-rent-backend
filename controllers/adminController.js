@@ -184,6 +184,33 @@ const deleteProvider = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // First check if user exists
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Check if the user is actually a regular user (not admin or provider)
+    if (user.role !== 'user') {
+      return res.status(400).json({ message: 'Cannot delete admin or provider users through this endpoint' });
+    }
+    
+    // Delete the user
+    await User.findByIdAndDelete(id);
+    
+    res.json({
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Server error while deleting user' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllProviders,
@@ -193,5 +220,6 @@ module.exports = {
   approveVehicle,
   rejectVehicle,
   updateVehicle,
-  deleteProvider
+  deleteProvider,
+  deleteUser
 };
