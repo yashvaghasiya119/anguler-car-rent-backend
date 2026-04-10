@@ -9,7 +9,8 @@ const {
   unbanProvider,
   getAllVehicles,
   approveVehicle,
-  rejectVehicle
+  rejectVehicle,
+  updateVehicle
 } = require('../controllers/adminController');
 
 // User management
@@ -22,5 +23,6 @@ router.put('/unban-provider/:id', authMiddleware, allowAdmin, unbanProvider);
 router.get('/vehicles', authMiddleware, allowAdmin, getAllVehicles);
 router.put('/approve-vehicle/:id', authMiddleware, allowAdmin, approveVehicle);
 router.put('/reject-vehicle/:id', authMiddleware, allowAdmin, rejectVehicle);
+router.put('/vehicles/:id', authMiddleware, allowAdmin, updateVehicle);
 
 module.exports = router;

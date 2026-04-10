@@ -129,6 +129,31 @@ const rejectVehicle = async (req, res) => {
   }
 };
 
+const updateVehicle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    const vehicle = await Vehicle.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }
+    ).populate('providerId', 'name email');
+
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    res.json({
+      message: 'Vehicle updated successfully',
+      vehicle
+    });
+  } catch (error) {
+    console.error('Update vehicle error:', error);
+    res.status(500).json({ message: 'Server error while updating vehicle' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllProviders,
@@ -136,5 +161,6 @@ module.exports = {
   unbanProvider,
   getAllVehicles,
   approveVehicle,
-  rejectVehicle
+  rejectVehicle,
+  updateVehicle
 };
