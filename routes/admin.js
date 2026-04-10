@@ -7,6 +7,8 @@ const {
   getAllProviders,
   banProvider,
   unbanProvider,
+  banUser,
+  unbanUser,
   getAllVehicles,
   approveVehicle,
   rejectVehicle,
@@ -18,6 +20,8 @@ const {
 // User management
 router.get('/users', authMiddleware, allowAdmin, getAllUsers);
 router.delete('/users/:id', authMiddleware, allowAdmin, deleteUser);
+router.put('/ban-user/:id', authMiddleware, allowAdmin, banUser);
+router.put('/unban-user/:id', authMiddleware, allowAdmin, unbanUser);
 router.get('/providers', authMiddleware, allowAdmin, getAllProviders);
 router.put('/ban-provider/:id', authMiddleware, allowAdmin, banProvider);
 router.put('/unban-provider/:id', authMiddleware, allowAdmin, unbanProvider);

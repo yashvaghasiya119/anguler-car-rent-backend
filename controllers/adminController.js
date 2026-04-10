@@ -199,7 +199,7 @@ const deleteUser = async (req, res) => {
       return res.status(400).json({ message: 'Cannot delete admin or provider users through this endpoint' });
     }
     
-    // Delete the user
+    // Delete user
     await User.findByIdAndDelete(id);
     
     res.json({
@@ -211,11 +211,69 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const banUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isBanned: true },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if user is actually a regular user (not admin or provider)
+    if (user.role !== 'user') {
+      return res.status(400).json({ message: 'Cannot ban admin or provider users through this endpoint' });
+    }
+
+    res.json({
+      message: 'User banned successfully',
+      user
+    });
+  } catch (error) {
+    console.error('Ban user error:', error);
+    res.status(500).json({ message: 'Server error while banning user' });
+  }
+};
+
+const unbanUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isBanned: false },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if user is actually a regular user (not admin or provider)
+    if (user.role !== 'user') {
+      return res.status(400).json({ message: 'Cannot unban admin or provider users through this endpoint' });
+    }
+
+    res.json({
+      message: 'User unbanned successfully',
+      user
+    });
+  } catch (error) {
+    console.error('Unban user error:', error);
+    res.status(500).json({ message: 'Server error while unbanning user' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllProviders,
   banProvider,
   unbanProvider,
+  banUser,
+  unbanUser,
   getAllVehicles,
   approveVehicle,
   rejectVehicle,
